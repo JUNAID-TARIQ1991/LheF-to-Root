@@ -1,0 +1,72 @@
+#define MyClass1_cxx
+#include "MyClass1.h"
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+
+void MyClass1::Loop()
+{
+//   In a ROOT session, you can do:
+//      root> .L MyClass1.C
+//      root> MyClass1 t
+//      root> t.GetEntry(12); // Fill t data members with entry number 12
+//      root> t.Show();       // Show values of entry 12
+//      root> t.Show(16);     // Read and show values of entry 16
+//      root> t.Loop();       // Loop on all entries
+//
+
+//     This is the loop skeleton where:
+//    jentry is the global entry number in the chain
+//    ientry is the entry number in the current Tree
+//  Note that the argument to GetEntry must be:
+//    jentry for TChain::GetEntry
+//    ientry for TTree::GetEntry and TBranch::GetEntry
+//
+//       To read only selected branches, Insert statements like:
+// METHOD1:
+//    fChain->SetBranchStatus("*",0);  // disable all branches
+//    fChain->SetBranchStatus("branchname",1);  // activate branchname
+// METHOD2: replace line
+//    fChain->GetEntry(jentry);       //read all branches
+//by  b_branchname->GetEntry(ientry); //read only this branch
+   TH1D *helec = new TH1D("helec","pT_hlambdaplus; pT ; dN/dpT",20,0,100);
+
+	
+	if (fChain == 0) return;
+
+   Long64_t nentries = fChain->GetEntriesFast();
+   cout<<nentries<<endl;
+   Long64_t nbytes = 0, nb = 0;
+   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+      Long64_t ientry = LoadTree(jentry);
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;
+      // if (Cut(ientry) < 0) continue;
+      //if (Cut(ientry) < 0) continue;
+      //for(int i=0 ; i<= Event_; i++){
+	    //  double NP =Event_Nparticles[i];
+    // cout<<Event_Nparticles[i]<<endl;	      
+      for(int j=0 ; j<= Particle_; j++){
+		       
+                       double ID = Particle_PID[j];
+		       Double_t PT  = Particle_PT[j];
+		       if(ID==-11){
+			       helec->Fill(Particle_PT[j]);
+		       }
+		       
+      //}
+
+
+               
+
+
+
+
+   }
+
+   }
+
+   helec->Draw();
+}
+
+
